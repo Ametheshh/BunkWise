@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="false"
+        android:label="BunkWise"
+        android:icon="@mipmap/ic_launcher"
+        android:theme="@style/Theme.SecureCampus">
+
+        <!-- The institutional login is the front door of the app -->
+        <activity
+            android:name="com.example.attendanceportal.LoginActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- After login: Attendance, CGPA, Vault -->
+        <activity android:name=".HomeActivity" android:exported="false" />
+        <activity android:name=".CgpaActivity" android:exported="false" />
+        <activity android:name=".VaultActivity" android:exported="false" />
+
+        <!-- Attendance screens -->
+        <activity android:name="com.example.attendanceportal.DashboardActivity" android:exported="false" />
+        <activity android:name="com.example.attendanceportal.SubjectActivity" android:exported="false" />
+        <activity android:name="com.example.attendanceportal.HistoryActivity" android:exported="false" />
+        <activity android:name="com.example.attendanceportal.ChangePasswordActivity" android:exported="false" />
+    </application>
+</manifest>

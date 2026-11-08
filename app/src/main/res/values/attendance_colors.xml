@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="att_ok">#2E7D32</color>
+    <color name="att_ok_bg">#E8F5E9</color>
+    <color name="att_bad">#C62828</color>
+    <color name="att_bad_bg">#FDECEA</color>
+    <color name="att_info_bg">#E3F2FD</color>
+    <color name="att_info_text">#0B3A66</color>
+</resources>
