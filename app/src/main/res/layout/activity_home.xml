@@ -40,7 +40,7 @@
             android:textAppearance="?attr/textAppearanceBodyLarge"
             android:textColor="?attr/colorOnSurfaceVariant" />
 
-        <!-- Attendance -->
+        <!-- 1. Attendance -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardAttendance"
             android:layout_width="match_parent"
@@ -79,9 +79,9 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- CGPA -->
+        <!-- 2. Marks -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardCgpa"
+            android:id="@+id/cardMarks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="14dp"
@@ -99,30 +99,31 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="CGPA"
+                    android:text="Marks"
                     android:textAppearance="?attr/textAppearanceTitleMedium"
                     android:textColor="?attr/colorOnSecondaryContainer" />
                 <TextView
-                    android:id="@+id/tvCgpaSummary"
+                    android:id="@+id/tvMarksSummary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?attr/textAppearanceDisplaySmall"
                     android:textColor="?attr/colorOnSecondaryContainer"
                     android:textStyle="bold" />
                 <TextView
+                    android:id="@+id/tvMarksHint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SGPA, cumulative CGPA and target planner"
                     android:textAppearance="?attr/textAppearanceBodySmall"
                     android:textColor="?attr/colorOnSecondaryContainer" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Vault -->
+        <!-- 3. Vault -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardVault"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp"
             android:clickable="true"
             android:focusable="true"
             app:cardBackgroundColor="?attr/colorTertiaryContainer"
@@ -155,24 +156,43 @@
                     android:textColor="?attr/colorOnTertiaryContainer" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
+        <!-- 4. CGPA checker -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardMarks"
+            android:id="@+id/cardCgpa"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
             android:clickable="true"
             android:focusable="true"
             app:cardBackgroundColor="?attr/colorSurfaceVariant"
             app:cardCornerRadius="24dp"
             app:cardElevation="0dp"
             app:strokeWidth="0dp">
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="22dp"
-                android:text="Marks"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:textColor="?attr/colorOnSurfaceVariant" />
+                android:orientation="vertical"
+                android:padding="22dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CGPA Checker"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+                <TextView
+                    android:id="@+id/tvCgpaSummary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceDisplaySmall"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SGPA, cumulative CGPA and target planner"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+            </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 </ScrollView>

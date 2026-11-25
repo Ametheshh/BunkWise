@@ -12,10 +12,10 @@ import com.example.attendanceportal.Ui;
 
 import java.util.Locale;
 
-/** What you see right after logging in: Attendance, CGPA and Document Vault. */
+/** What you see right after logging in: Attendance, Marks, Document Vault and CGPA checker. */
 public class HomeActivity extends BaseActivity {
 
-    private TextView tvWho, tvAttendance, tvAttendanceHint, tvCgpa, tvVault;
+    private TextView tvWho, tvAttendance, tvAttendanceHint, tvMarks, tvMarksHint, tvCgpa, tvVault;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +28,8 @@ public class HomeActivity extends BaseActivity {
         tvAttendanceHint = findViewById(R.id.tvAttendanceHint);
         tvCgpa = findViewById(R.id.tvCgpaSummary);
         tvVault = findViewById(R.id.tvVaultSummary);
+        tvMarks = findViewById(R.id.tvMarksSummary);
+        tvMarksHint = findViewById(R.id.tvMarksHint);
 
         findViewById(R.id.cardAttendance).setOnClickListener(v ->
                 startActivity(new Intent(this, com.example.attendanceportal.DashboardActivity.class)));
@@ -60,6 +62,16 @@ public class HomeActivity extends BaseActivity {
             tvAttendanceHint.setText(overall.isShortage()
                     ? "Below " + repo.getThreshold() + "%. Tap to see what to attend."
                     : "Eligible. Tap for subject-wise details.");
+        }
+
+        // ---- marks (CIE results from the institutional database)
+        try {
+            Double avg = com.example.attendanceportal.MarksActivity.averageFinalCie(this);
+            tvMarks.setText(avg == null ? "--" : String.format(Locale.US, "%.1f", avg) + " / 50");
+            tvMarksHint.setText(avg == null ? "No CIE results yet" : "Average CIE. Tap for subject-wise marks.");
+        } catch (Exception e) {
+            tvMarks.setText("--");
+            tvMarksHint.setText("Marks could not be loaded");
         }
 
         // ---- CGPA and vault (this student's own encrypted data)
