@@ -4,6 +4,7 @@ import com.example.mini_project.R;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -50,6 +51,22 @@ public class DashboardActivity extends BaseActivity {
                 startActivity(new Intent(this, ChangePasswordActivity.class)));
         findViewById(R.id.btnHistory).setOnClickListener(v ->
                 startActivity(new Intent(this, HistoryActivity.class)));
+        findViewById(R.id.btnUpdate).setOnClickListener(v ->
+                startActivity(new Intent(this, ManualEntryActivity.class)));
+
+        boolean real = isRealData();
+        findViewById(R.id.updateRow).setVisibility(real ? View.VISIBLE : View.GONE);
+        findViewById(R.id.btnPassword).setVisibility(real ? View.GONE : View.VISIBLE);   // no password for typed-in data
+        findViewById(R.id.btnHistory).setVisibility(real ? View.GONE : View.VISIBLE);    // totals only, no daily records
+        findViewById(R.id.tvRecentTitle).setVisibility(real ? View.GONE : View.VISIBLE);
+        findViewById(R.id.recentContainer).setVisibility(real ? View.GONE : View.VISIBLE);
+        ((TextView) findViewById(R.id.tvDataNote)).setText(real
+                ? "Entered by you from Uniclare. Check the official portal before relying on it."
+                : "Synthetic demo data. Not official attendance records.");
+    }
+
+    private static boolean isRealData() {
+        return AttendanceDb.current() == AttendanceDb.Source.REAL;
     }
 
     // Reload every time we come back (for example after changing the password)
@@ -68,8 +85,16 @@ public class DashboardActivity extends BaseActivity {
 
         // ---- who
         tvWho.setText("Hello, " + titleCase(me.name));
-        tvMeta.setText(me.usn + "  |  " + me.email + "  |  Lab batch " + me.labBatch);
+        StringBuilder meta = new StringBuilder(me.usn);
+        if (me.email != null && !me.email.isEmpty()) meta.append("  |  ").append(me.email);
+        if (me.labBatch != null && !me.labBatch.isEmpty()) meta.append("  |  Lab batch ").append(me.labBatch);
+        tvMeta.setText(meta);
         cardDefaultPw.setVisibility(me.passwordChanged ? View.GONE : View.VISIBLE);
+        if (isRealData()) {
+            long last = RealAttendance.lastUpdated(this);
+            ((TextView) findViewById(R.id.tvLastUpdated)).setText(last == 0 ? "Not updated yet"
+                    : "Last updated " + DateUtils.getRelativeTimeSpanString(last));
+        }
 
         // ---- overall
         if (overall == null) {

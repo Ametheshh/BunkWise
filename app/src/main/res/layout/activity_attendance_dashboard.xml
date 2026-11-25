@@ -47,6 +47,30 @@
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="?attr/colorOnSurfaceVariant" />
 
+        <!-- Real data only: when it was last entered, and a button to update it -->
+        <LinearLayout
+            android:id="@+id/updateRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/tvLastUpdated"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+            <Button
+                android:id="@+id/btnUpdate"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Update" />
+        </LinearLayout>
+
         <!-- still on the initial password -->
         <LinearLayout
             android:id="@+id/cardDefaultPw"
@@ -168,6 +192,7 @@
             android:orientation="vertical" />
 
         <TextView
+            android:id="@+id/tvRecentTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -199,6 +224,7 @@
             android:text="Change password" />
 
         <TextView
+            android:id="@+id/tvDataNote"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"

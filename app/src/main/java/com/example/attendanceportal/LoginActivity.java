@@ -72,6 +72,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override public void onNothingSelected(AdapterView<?> parent) { }
         });
         btnLogin.setOnClickListener(v -> attemptLogin());
+        findViewById(R.id.btnMyAttendance).setOnClickListener(v ->
+                startActivity(new Intent(this, ManualEntryActivity.class)));
     }
 
     private void attemptLogin() {
@@ -107,6 +109,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private Result checkCredentials(String email, String password, Session.Role role) {
         try {
+            AttendanceDb.select(AttendanceDb.Source.DEMO);      // this form logs in to the demo data only
             AttendanceRepo repo = new AttendanceRepo(this);
             Models.Student s = repo.findAccountByEmail(role, email);
             if (role == Session.Role.STUDENT && s == null) {                                  // nnm... and nmm... are the same student
