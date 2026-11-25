@@ -23,9 +23,24 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_notice_info"
             android:padding="12dp"
-            android:text="Open Uniclare, go to Attendance and tap Summary. Copy each subject's classes held and attended here. Theory and practical are separate rows."
+            android:text="Open Uniclare, go to Attendance and tap Summary. Screenshot the list (scroll and take more if it does not fit) and import them below, or type each subject's classes held and attended. Theory and practical are separate rows."
             android:textColor="@color/att_info_text"
             android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/btnImportScreenshots"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:text="Import from screenshots" />
+
+        <TextView
+            android:id="@+id/tvImportStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:visibility="gone" />
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"

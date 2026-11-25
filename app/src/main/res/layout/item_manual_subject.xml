@@ -49,6 +49,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:id="@+id/tilConducted"
                 android:hint="Held">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etConducted"
@@ -63,6 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
+                android:id="@+id/tilAttended"
                 android:hint="Attended">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etAttended"

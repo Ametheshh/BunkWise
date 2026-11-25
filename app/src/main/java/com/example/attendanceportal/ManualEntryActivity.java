@@ -3,7 +3,18 @@ package com.example.attendanceportal;
 import com.example.mini_project.R;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.Button;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
+
+import com.google.android.material.color.MaterialColors;
+import com.google.android.material.textfield.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -27,7 +38,13 @@ public class ManualEntryActivity extends AppCompatActivity {
 
     private EditText etUsn, etName;
     private LinearLayout rows;
-    private TextView tvError;
+    private TextView tvError, tvImportStatus;
+    private Button btnImport;
+
+    /** Several screenshots, because the Uniclare list usually needs scrolling. */
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickScreenshots = registerForActivityResult(
+            new ActivityResultContracts.PickMultipleVisualMedia(MAX_SCREENSHOTS), this::importScreenshots);
+    private static final int MAX_SCREENSHOTS = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +64,11 @@ public class ManualEntryActivity extends AppCompatActivity {
                 addRow(null).findViewById(R.id.etSubName).requestFocus();
             }
         });
+        tvImportStatus = findViewById(R.id.tvImportStatus);
+        btnImport = findViewById(R.id.btnImportScreenshots);
+        btnImport.setOnClickListener(v -> pickScreenshots.launch(new PickVisualMediaRequest.Builder()
+                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                .build()));
         findViewById(R.id.btnSave).setOnClickListener(v -> save());
         findViewById(R.id.btnDeleteAll).setOnClickListener(v -> confirmDelete());
 
@@ -72,8 +94,104 @@ public class ManualEntryActivity extends AppCompatActivity {
             ((CheckBox) row.findViewById(R.id.cbPractical)).setChecked(e.practical);
         }
         row.findViewById(R.id.btnRemove).setOnClickListener(v -> rows.removeView(row));
+        clearErrorOnEdit(row.findViewById(R.id.tilConducted));
+        clearErrorOnEdit(row.findViewById(R.id.tilAttended));
         rows.addView(row);
         return row;
+    }
+
+    private void importScreenshots(List<Uri> images) {
+        if (images == null || images.isEmpty()) return;
+        btnImport.setEnabled(false);
+        tvError.setVisibility(View.GONE);
+        showImportStatus("Reading " + images.size() + (images.size() == 1 ? " screenshot…" : " screenshots…"), false);
+        ScreenshotImporter.read(this, images, new ScreenshotImporter.Callback() {
+            @Override public void onDone(UniclareScreenshotParser.Result result) {
+                if (isFinishing() || isDestroyed()) return;
+                btnImport.setEnabled(true);
+                applyImport(result, images.size());
+            }
+
+            @Override public void onError(Exception e) {
+                if (isFinishing() || isDestroyed()) return;
+                btnImport.setEnabled(true);
+                showImportStatus("Could not read the screenshot. Try again, or type the numbers in.", true);
+            }
+        });
+    }
+
+    /** Fills the form from the screenshots. Nothing is saved until the student taps Save. */
+    private void applyImport(UniclareScreenshotParser.Result result, int screenshots) {
+        if (result.rows.isEmpty()) {
+            showImportStatus("No subjects found. Use a screenshot of Uniclare's Attendance Summary list.", true);
+            return;
+        }
+        if (etUsn.getText().toString().trim().isEmpty() && result.usn != null) etUsn.setText(result.usn);
+        if (etName.getText().toString().trim().isEmpty() && result.name != null) etName.setText(result.name);
+
+        int filled = 0, unsure = 0, skipped = 0;
+        for (UniclareScreenshotParser.Row r : result.rows) {
+            View row = findRow(r.name, r.practical);
+            if (row == null) {
+                if (rows.getChildCount() >= RealAttendance.MAX_SUBJECTS) {
+                    skipped++;
+                    continue;
+                }
+                row = addRow(null);
+            }
+            ((EditText) row.findViewById(R.id.etSubName)).setText(r.name);
+            ((CheckBox) row.findViewById(R.id.cbPractical)).setChecked(r.practical);
+            ((EditText) row.findViewById(R.id.etConducted)).setText(String.valueOf(r.conducted));
+            ((EditText) row.findViewById(R.id.etAttended)).setText(String.valueOf(r.attended));
+            String check = r.confident ? null : "Check this";
+            ((TextInputLayout) row.findViewById(R.id.tilConducted)).setError(check);
+            ((TextInputLayout) row.findViewById(R.id.tilAttended)).setError(check);
+            filled++;
+            if (!r.confident) unsure++;
+        }
+
+        StringBuilder msg = new StringBuilder("Filled ").append(filled)
+                .append(filled == 1 ? " subject" : " subjects").append(" from ").append(screenshots)
+                .append(screenshots == 1 ? " screenshot." : " screenshots.");
+        if (unsure > 0) msg.append(' ').append(unsure).append(unsure == 1 ? " needs" : " need")
+                .append(" checking: the numbers did not match the percentage.");
+        if (skipped > 0) msg.append(' ').append(skipped).append(" skipped: at most ")
+                .append(RealAttendance.MAX_SUBJECTS).append(" subjects.");
+        msg.append(" Compare with Uniclare, then tap Save.");
+        showImportStatus(msg.toString(), unsure > 0 || skipped > 0);
+    }
+
+    /** An existing row for this subject, else an empty row to reuse, else null. */
+    private View findRow(String name, boolean practical) {
+        View blank = null;
+        for (int i = 0; i < rows.getChildCount(); i++) {
+            View row = rows.getChildAt(i);
+            String n = ((EditText) row.findViewById(R.id.etSubName)).getText().toString().trim();
+            boolean p = ((CheckBox) row.findViewById(R.id.cbPractical)).isChecked();
+            if (n.equalsIgnoreCase(name) && p == practical) return row;
+            if (blank == null && n.isEmpty()
+                    && ((EditText) row.findViewById(R.id.etConducted)).getText().toString().trim().isEmpty()
+                    && ((EditText) row.findViewById(R.id.etAttended)).getText().toString().trim().isEmpty()) {
+                blank = row;
+            }
+        }
+        return blank;
+    }
+
+    private void showImportStatus(String message, boolean warn) {
+        tvImportStatus.setText(message);
+        tvImportStatus.setTextColor(MaterialColors.getColor(tvImportStatus,
+                warn ? androidx.appcompat.R.attr.colorError : com.google.android.material.R.attr.colorOnSurfaceVariant));
+        tvImportStatus.setVisibility(View.VISIBLE);
+    }
+
+    private static void clearErrorOnEdit(TextInputLayout til) {
+        if (til.getEditText() == null) return;
+        til.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) { }
+            @Override public void onTextChanged(CharSequence s, int a, int b, int c) { }
+            @Override public void afterTextChanged(Editable s) { if (til.getError() != null && s.length() > 0 && til.hasFocus()) til.setError(null); }
+        });
     }
 
     private void save() {
