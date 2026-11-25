@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS teachers (id INTEGER PRIMARY KEY, name TEXT NOT NULL, email TEXT NOT NULL UNIQUE, pw_salt TEXT NOT NULL, pw_hash TEXT NOT NULL, password_changed INTEGER NOT NULL DEFAULT 0, failed_logins INTEGER NOT NULL DEFAULT 0, locked_until INTEGER NOT NULL DEFAULT 0, is_active INTEGER NOT NULL DEFAULT 1);
+CREATE TABLE IF NOT EXISTS teacher_subjects (teacher_id INTEGER NOT NULL REFERENCES teachers(id), subject_id INTEGER NOT NULL REFERENCES subjects(id), PRIMARY KEY (teacher_id, subject_id));
+CREATE TABLE IF NOT EXISTS marks (student_id INTEGER NOT NULL, subject_id INTEGER NOT NULL, assessment TEXT NOT NULL CHECK (assessment IN ('IA1','IA2','Assignment','Lab','Semester End')), score INTEGER NOT NULL CHECK (score >= 0), maximum INTEGER NOT NULL CHECK (maximum > 0 AND score <= maximum), PRIMARY KEY(student_id,subject_id,assessment), FOREIGN KEY(student_id,subject_id) REFERENCES enrollments(student_id,subject_id));
+CREATE TABLE IF NOT EXISTS audit_log (id INTEGER PRIMARY KEY, teacher_id INTEGER NOT NULL REFERENCES teachers(id), student_id INTEGER NOT NULL, subject_id INTEGER NOT NULL, action TEXT NOT NULL, record_key TEXT NOT NULL, before_value TEXT, after_value TEXT NOT NULL, changed_at INTEGER NOT NULL, FOREIGN KEY(student_id,subject_id) REFERENCES enrollments(student_id,subject_id));
+INSERT OR IGNORE INTO app_settings VALUES ('term_start','2026-08-03'),('term_end','2026-11-30');
+INSERT OR IGNORE INTO teachers (id,name,email,pw_salt,pw_hash) VALUES (1,'Demo Teacher 1','teacher1@nmamit.in','BwJZOVS6NfnPGPxnBcHmjQ==','S9HKPZ/P0+9/TgyuTRh6oTznhBbgVwA5Hrvv9WK3SQ0=');
+INSERT OR IGNORE INTO teacher_subjects VALUES (1,1),(1,2);
+INSERT OR IGNORE INTO teachers (id,name,email,pw_salt,pw_hash) VALUES (2,'Demo Teacher 2','teacher2@nmamit.in','gBesjguQhX5kNZGGv96fCw==','4/+GKtO/mLipyFXPwdiWTo8cOi3zAAOrAXwOHFGGOuU=');
+INSERT OR IGNORE INTO teacher_subjects VALUES (2,3),(2,4);
+INSERT OR IGNORE INTO teachers (id,name,email,pw_salt,pw_hash) VALUES (3,'Demo Teacher 3','teacher3@nmamit.in','WibIEaqmUah2HQzkRzSd3w==','IZL7YDJCbSld1aJifWddqs7Ntwc3uFpWtC8o1YVTBh8=');
+INSERT OR IGNORE INTO teacher_subjects VALUES (3,5),(3,6);
+INSERT OR IGNORE INTO teachers (id,name,email,pw_salt,pw_hash) VALUES (4,'Demo Teacher 4','teacher4@nmamit.in','fzNyTg+tpPUj8uLYsjsNdA==','d4N5/NUf7W8Lr5OXAzoeZL/MSkaxB+8/Q9D1IfFkSZk=');
+INSERT OR IGNORE INTO teacher_subjects VALUES (4,7),(4,8);

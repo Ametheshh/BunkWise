@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.SecureCampus" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">#3B5BDB</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">#DDE4FF</item>
+        <item name="colorOnPrimaryContainer">#0B1F66</item>
+
+        <item name="colorSecondary">#00796B</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="colorSecondaryContainer">#CDEBE5</item>
+        <item name="colorOnSecondaryContainer">#00201C</item>
+
+        <item name="colorTertiary">#B45309</item>
+        <item name="colorOnTertiary">#FFFFFF</item>
+        <item name="colorTertiaryContainer">#FFE8CC</item>
+        <item name="colorOnTertiaryContainer">#3A1D00</item>
+
+        <item name="colorSurface">#FBFBFF</item>
+        <item name="colorOnSurface">#1B1B1F</item>
+        <item name="colorSurfaceVariant">#E4E6F0</item>
+        <item name="colorOnSurfaceVariant">#454651</item>
+        <item name="colorOutline">#767680</item>
+        <item name="colorError">#BA1A1A</item>
+
+        <item name="android:colorBackground">#FBFBFF</item>
+        <item name="android:statusBarColor">#FBFBFF</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>
